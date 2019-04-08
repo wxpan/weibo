@@ -8,6 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => [
+                'show',
+                'create',
+                'store'
+            ]
+        ]);
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     public function create()
     {
         return view('users.create');
@@ -38,12 +52,15 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
 //        compact('user')  得到 [user => $user] 的数组， $user 自动注入进来的 User 模型的实例
         return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $this->validate($request, [
             //bail:在第一个验证规则失败时，就停止该字段接下来的规则验证
             'name'     => 'bail|required|max:50',
