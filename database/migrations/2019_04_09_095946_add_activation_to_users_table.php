@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIsAdminToUsersTable extends Migration
+class AddActivationToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddIsAdminToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_admin')->default(false)->comment('是否管理员 0 非; 1 管理员');
+            $table->string('activation_token')->nullable()->comment('激活令牌');
+            $table->boolean('activated')->default(false)->comment('激活状态');
         });
     }
 
@@ -26,8 +27,8 @@ class AddIsAdminToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
-            $table->dropColumn('is_admin');
+            $table->dropColumn('activation_token');
+            $table->dropColumn('activated');
         });
     }
 }
